@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "default.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "default.labels" . | nindent 4 }}
+  {{- with .Values.main.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ eq .Values.main.expose.type "http" | ternary "ClusterIP" (default .Values.main.expose.tcp.serviceType "LoadBalancer") }}
+  ports:
+    - port: {{ .Values.main.expose.port }}
+      targetPort: challenge-port
+      protocol: TCP
+      name: challenge-port
+  selector:
+    {{- include "default.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/type: master

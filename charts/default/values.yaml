@@ -1,0 +1,95 @@
+image:
+  repository: ghcr.io/wm-team/challenge-sample-web
+  tag: main
+  pullPolicy: IfNotPresent
+
+# Specify imagePullSecrets if you are using a private registry
+imagePullSecrets:
+  # - name: myRegistryKeySecret
+
+nameOverride:
+fullnameOverride:
+
+main:
+  flag: flag{example}
+
+  expose:
+    port: 80
+    # http or tcp
+    type: http
+    http:
+      ingressClassName: ""
+      host: ""
+    tcp:
+      # use LoadBalancer or NodePort
+      serviceType: NodePort
+
+  network:
+    allowInternal: false
+    allowExternal: true
+    dnsPolicy: None
+    dnsConfig:
+      nameservers:
+        - 1.1.1.1
+        - 1.0.0.1
+
+  # here you can override the livenessProbe for the main container
+  # it may be used to increase the timeout for the livenessProbe (e.g., to resolve issues like
+  livenessProbe:
+    # httpGet:
+    #   path: /healthz
+    #   port: http
+    # initialDelaySeconds: 30
+    # periodSeconds: 10
+    # timeoutSeconds: 5
+    # failureThreshold: 6
+    # successThreshold: 1
+
+  # here you can override the readinessProbe for the main container
+  # it may be used to increase the timeout for the readinessProbe (e.g., to resolve issues like
+
+  readinessProbe:
+    # httpGet:
+    #   path: /healthz
+    #   port: http
+    # initialDelaySeconds: 30
+    # periodSeconds: 10
+    # timeoutSeconds: 5
+    # failureThreshold: 6
+    # successThreshold: 1
+
+  # We usually recommend not specifying default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  deploymentLabels: {}
+  deploymentAnnotations: {}
+  podLabels: {}
+  podAnnotations:
+    kubernetes.io/disable-service-links: "true"
+  podSecurityContext:
+    privileged: false
+
+  serviceAccount:
+    enabled: false
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  service:
+    annotations: {}
+
+  ingress:
+    annotations: {}

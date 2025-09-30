@@ -1,0 +1,29 @@
+{{- if eq .Values.main.expose.type "http" -}}
+{{- $fullName := include "default.fullname" . -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "default.labels" . | nindent 4 }}
+  {{- with .Values.main.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.main.expose.http.ingressClassName }}
+  ingressClassName: {{ .Values.main.expose.http.ingressClassName }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.main.expose.http.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  name: challenge-port
+  {{- end }}
